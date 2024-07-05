@@ -1,14 +1,14 @@
 "use client"
 import { useState } from "react";
 import Image from "next/image";
-import Input from "@/components/form-elemnts/Input";
-import Radio from "@/components/form-elemnts/Radio";
-import Checkbox from "@/components/form-elemnts/Checkbox";
-import Select from "@/components/form-elemnts/Select";
-import TextArea from "@/components/form-elemnts/TextArea";
-import ImageElement from "@/components/form-elemnts/ImageElement";
-import DateElement from "@/components/form-elemnts/DateElement";
-import Button from "@/components/Button";
+import Input from "../../components/form-elemnts/Input";
+import Radio from "../../components/form-elemnts/Radio";
+import Checkbox from "../../components/form-elemnts/Checkbox";
+import Select from "../../components/form-elemnts/Select";
+import TextArea from "../../components/form-elemnts/TextArea";
+import ImageElement from "../../components/form-elemnts/ImageElement";
+import DateElement from "../../components/form-elemnts/DateElement";
+import Button from "../../components/Button";
 import { useFormik } from 'formik';
 import { schema } from "../Schemas/schema";
 import { toast } from 'react-hot-toast';
