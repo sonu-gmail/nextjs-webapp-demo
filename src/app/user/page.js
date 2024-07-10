@@ -100,7 +100,7 @@ function Home() {
 								<Radio type="radio" name="gender" value="male"  handleChange={handleChange} values={values?.gender}/>
 								<Radio type="radio" name="gender" value="female"  handleChange={handleChange} values={values?.gender}/>
 							</div>
-							{errors?.gender && touched?.gender && <span className="text-red-700">{errors?.gender}</span>}
+							{errors?.gender && touched?.gender && <span className="text-[red]">{errors?.gender}</span>}
 						</div>
 						<div className="mb-4">
 							<div className="flex items-center">
@@ -108,7 +108,7 @@ function Home() {
 								<Checkbox type="checkbox" name="hobbies" value="Reading Books" handleChange={handleChange} values={values?.hobbies}/>
 								<Checkbox type="checkbox" name="hobbies" value="Singing" handleChange={handleChange} values={values?.hobbies}/>
 							</div>
-							{errors?.hobbies && touched?.hobbies && <span className="text-red-700">{errors?.hobbies}</span>}
+							{errors?.hobbies && touched?.hobbies && <span className="text-[red]">{errors?.hobbies}</span>}
 						</div>
 					</div>
 					<DateElement label="Date" name="entry_date" type="date"  handleChange={handleChange} errors={errors?.entry_date} touched={touched?.entry_date} values={values?.entry_date} />

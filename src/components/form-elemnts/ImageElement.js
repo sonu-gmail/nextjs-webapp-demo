@@ -19,7 +19,7 @@ const ImageElement = ({label, type, name, errors, touched, values, handleChange}
                 </p>
                 </div>
             </div>
-            {errors && touched && <span className="text-red-700">{errors}</span>}
+            {errors && touched && <span className="text-[red]">{errors}</span>}
         </div>
     )
 }

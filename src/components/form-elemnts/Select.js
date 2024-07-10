@@ -9,7 +9,7 @@ const Select = ({name, errors, touched, values, handleChange}) => {
                 <option value="Australia">Australia</option>
                 <option value="United Kingdom">United Kingdom</option>
             </select>
-            {errors && touched && <span className="text-red-700">{errors}</span>}
+            {errors && touched && <span className="text-[red]">{errors}</span>}
         </div>
     )
 }
