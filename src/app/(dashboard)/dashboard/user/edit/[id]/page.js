@@ -7,7 +7,7 @@ import { useFormik } from 'formik';
 import { toast } from 'react-hot-toast';
 import { updateuserschema } from "../../../../../Schemas/updateuserschema";
 
-const editUser = ({params}) => {
+const EditUser = ({params}) => {
     const[user, setUser] = useState('');
     const[message, setMessage] = useState(null);
     const[loading, setLoading] =  useState(true);
@@ -81,10 +81,10 @@ const editUser = ({params}) => {
 	const { errors, touched, values, handleChange, handleSubmit } = formik;
 
     useEffect(() => {
-        usersDetail();
+        getUsersDetail();
     },[]);
 
-    const usersDetail =  async () => {
+    const getUsersDetail =  async () => {
         let url = process.env.NEXT_PUBLIC_URL+"/api/user/view";
         let response = await fetch(url, {
             method: "POST",
@@ -230,4 +230,4 @@ const editUser = ({params}) => {
     )
 }
 
-export default editUser;
+export default EditUser;

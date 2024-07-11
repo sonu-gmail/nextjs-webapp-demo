@@ -10,10 +10,10 @@ const UserView = ({params}) => {
     const[loading, setLoading]=  useState(true);
 
     useEffect(() => {
-        usersDetail();
+        getUsersDetail();
     },[]);
 
-    const usersDetail =  async () => {
+    const getUsersDetail =  async () => {
         let url = process.env.NEXT_PUBLIC_URL+"/api/user/view";
         let response = await fetch(url, {
             method: "POST",
