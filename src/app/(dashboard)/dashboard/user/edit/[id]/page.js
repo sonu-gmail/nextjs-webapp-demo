@@ -7,11 +7,11 @@ import { useFormik } from 'formik';
 import { toast } from 'react-hot-toast';
 import { updateuserschema } from "../../../../../Schemas/updateuserschema";
 
-const userEdit = ({params}) => {
+const editUser = ({params}) => {
     const[user, setUser] = useState('');
     const[message, setMessage] = useState(null);
-    const[loading, setLoading]=  useState(true);
-    const[loader, setLoader]=  useState(false);
+    const[loading, setLoading] =  useState(true);
+    const[loader, setLoader] =  useState(false);
     const[isImageUpload, setIsImageUpload] = useState(false);
     const router = useRouter();
 
@@ -230,4 +230,4 @@ const userEdit = ({params}) => {
     )
 }
 
-export default userEdit;
+export default editUser;
