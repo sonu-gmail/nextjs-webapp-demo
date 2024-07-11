@@ -6,9 +6,10 @@ export async function POST(req, res) {
         const authSession = await getServerAuthSession();
         if(authSession?.accessToken) {
 
-            let apiUrl = process.env.API_URL+'/v1/users';
+            const { id } = await req.json();
+            let apiUrl = process.env.API_URL+'/v1/user/delete/'+id;
             let response = await fetch(apiUrl, {
-                method: "GET",
+                method: "delete",
                 headers: {
                     'Accept': 'application/json',
                     Authorization: `Bearer ${authSession?.accessToken}`,
@@ -16,9 +17,7 @@ export async function POST(req, res) {
             })
             response = await response.json();
             return NextResponse.json(response)
-
         }
-
     } catch (error) {
         console.error('====>',error);
         res.status(500).json({ success: false, error: 'Internal Server Error' });

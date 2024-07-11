@@ -6,7 +6,8 @@ export async function POST(req, res) {
         const authSession = await getServerAuthSession();
         if(authSession?.accessToken) {
 
-            let apiUrl = process.env.API_URL+'/v1/users';
+            const { id } = await req.json();
+            let apiUrl = process.env.API_URL+'/v1/user/'+id;
             let response = await fetch(apiUrl, {
                 method: "GET",
                 headers: {
@@ -16,7 +17,6 @@ export async function POST(req, res) {
             })
             response = await response.json();
             return NextResponse.json(response)
-
         }
 
     } catch (error) {
