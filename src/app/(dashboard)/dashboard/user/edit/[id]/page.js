@@ -10,6 +10,7 @@ import { updateuserschema } from "../../../../../Schemas/updateuserschema";
 const EditUser = ({params}) => {
     const[user, setUser] = useState('');
     const[message, setMessage] = useState(null);
+    const[error, setError] = useState(null);
     const[loading, setLoading] =  useState(true);
     const[loader, setLoader] =  useState(false);
     const[isImageUpload, setIsImageUpload] = useState(false);
@@ -55,24 +56,34 @@ const EditUser = ({params}) => {
 					method: "POST",
 					body: f
 				})
-		
-				response = await response.json()
-                if(response.status == true) {
-					toast.success(response.msg);
-					setLoader(false)
-                    router.push('/dashboard/users');
-				}
-	
-				if(response.status == false) {
-					toast.error(response.msg);
-					setLoader(false)
-				}
+                if(!response.ok) {
+                    if(response.status == 404) {
+                        setLoader(false)
+                        toast.error(response.url+' '+response.status+'( '+response.statusText+' )');
+                    }
+                    console.log(response);
+                }
+                if(response.ok) {
 
-				if (response.hasOwnProperty('exception')) {
-					toast.error(response.message);
-					setLoader(false)
-				}
+                    response = await response.json()
+                    if(response.status == true) {
+                        toast.success(response.msg);
+                        setLoader(false)
+                        router.push('/dashboard/users');
+                    }
+        
+                    if(response.status == false) {
+                        toast.error(response.msg);
+                        setLoader(false)
+                    }
+    
+                    if (response.hasOwnProperty('exception')) {
+                        toast.error(response.message);
+                        setLoader(false)
+                    }
+                }
 			} catch (error) {
+                console.log('ok');
 				console.error(error);
 			}
 		},
@@ -81,7 +92,12 @@ const EditUser = ({params}) => {
 	const { errors, touched, values, handleChange, handleSubmit } = formik;
 
     useEffect(() => {
-        getUsersDetail();
+        getUsersDetail().then((res) => {
+            setUser(res.data);
+            setLoading(false);
+        }).catch((error) => {
+            setError(error);
+        });
     },[]);
 
     const getUsersDetail =  async () => {
@@ -90,18 +106,25 @@ const EditUser = ({params}) => {
             method: "POST",
             body:JSON.stringify({id:params?.id})
         })
-        response = await response.json();
-        console.log(response);
-        if(response.status == true)
-        {
-            setUser(response.data);
+
+        if(!response.ok) {
             setLoading(false);
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-        if(response.status == false)
-        {
-            setUser(null);
-            setMessage(response.msg);
-            setLoading(false);
+
+        if(response.ok) {
+
+            response = await response.json();
+
+            if(response.status == false)
+            {
+                setLoading(false);
+                setUser(null);
+                setMessage(response.msg);
+                throw new Error(`HTTP error! status: ${response.msg}`);
+            }
+
+            return response
         }
     }
 
@@ -109,6 +132,21 @@ const EditUser = ({params}) => {
 		formik.setFieldValue('image', e.currentTarget.files[0]);
         setIsImageUpload(true);
 	}
+
+    if(error) {
+
+        return (
+            <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+                <div className="px-4 py-6 md:px-6 xl:px-7.5">
+                    <h4 className="text-xl font-semibold text-black dark:text-white">
+                    User Edit
+                    </h4>
+                </div>
+                <div className="px-4 py-6 md:px-6 xl:px-7.5 max-w-full overflow-x-auto">{error.message}</div>
+            </div>
+        )
+
+    }
 
     return (
         <>

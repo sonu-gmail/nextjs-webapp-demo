@@ -1,6 +1,5 @@
 "use client"
 import { useState } from "react";
-import Image from "next/image";
 import Input from "../../components/form-elemnts/Input";
 import Radio from "../../components/form-elemnts/Radio";
 import Checkbox from "../../components/form-elemnts/Checkbox";
@@ -9,12 +8,14 @@ import TextArea from "../../components/form-elemnts/TextArea";
 import ImageElement from "../../components/form-elemnts/ImageElement";
 import DateElement from "../../components/form-elemnts/DateElement";
 import Button from "../../components/Button";
+import { useRouter } from "next/navigation";
 import { useFormik } from 'formik';
 import { schema } from "../Schemas/schema";
 import { toast } from 'react-hot-toast';
 
 function Home() {
 	const [loader, setLoader] = useState(false);
+	const router = useRouter();
 	const formik = useFormik({
 		initialValues: {
 			first_name: "",
@@ -53,25 +54,33 @@ function Home() {
 					method: "POST",
 					body: f
 				})
-		
-				response = await response.json()
-				if(response.status == true) {
-					toast.success(response.msg);
+				if(!response.ok) {
 					setLoader(false)
-					resetForm();
+					toast.error(response.url+' '+response.status+'( '+response.statusText+' )');
 				}
+				if(response.ok) {
+
+					response = await response.json()
+					if(response.status == true) {
+						toast.success(response.msg);
+						setLoader(false)
+						resetForm();
+					}
+		
+					if(response.status == false) {
+						toast.error(response.msg);
+						setLoader(false)
+						resetForm();
+					}
 	
-				if(response.status == false) {
-					toast.error(response.msg);
-					setLoader(false)
-					resetForm();
+					if (response.hasOwnProperty('exception')) {
+						toast.error(response.message);
+						setLoader(false)
+						resetForm();
+					}
+					console.log(response);
 				}
 
-				if (response.hasOwnProperty('exception')) {
-					toast.error(response.message);
-					setLoader(false)
-					resetForm();
-				}
 			} catch (error) {
 				console.error(error);
 			}
@@ -115,8 +124,9 @@ function Home() {
 					<TextArea label="Address" name="address" type="textarea" handleChange={handleChange} errors={errors?.address} touched={touched?.address} values={values?.address} />
 					<ImageElement label="Image" type="file" name="image" handleChange={handleImageUpload} errors={errors?.image} touched={touched?.image} values={values?.image} />
 					<div className="flex justify-end mt-6">
+						<button type="button" className="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-pink-500 rounded-md hover:bg-pink-700 focus:outline-none focus:bg-gray-600 mr-2" onClick={() =>router.push('/')}>Sign In</button>
 						{
-							(loader == true) ? <Button label="loading........" type="button"/> : <Button label="Save" type="submit"/>
+							(loader == true) ? <Button label="loading........" type="button"/> : <Button label="Create User" type="submit"/>
 						}
 					</div>
 				</form>

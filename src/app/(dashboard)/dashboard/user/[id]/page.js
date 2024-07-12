@@ -6,33 +6,68 @@ import Loader from "../../../../../components/common/Loader";
 
 const UserView = ({params}) => {
     const[user, setUser] = useState(null);
+    const [error, setError] = useState(null);
     const[message, setMessage] = useState(null);
     const[loading, setLoading]=  useState(true);
 
     useEffect(() => {
-        getUsersDetail();
+        
+        getUsersDetail().then((res) => {
+            
+            if(res.status == true) {
+                setUser(res.data);
+                setLoading(false);
+            }
+
+        }).catch((error) => {
+            setError(error)
+        });
+
     },[]);
 
     const getUsersDetail =  async () => {
+        
         let url = process.env.NEXT_PUBLIC_URL+"/api/user/view";
+        
         let response = await fetch(url, {
             method: "POST",
             body:JSON.stringify({id:params?.id})
         })
-        response = await response.json();
-        console.log(response);
-        if(response.status == true)
-        {
-            setUser(response.data);
+        
+        
+        if(!response.ok) {
             setLoading(false);
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-        if(response.status == false)
-        {
-            setUser(null);
-            setMessage(response.msg);
-            setLoading(false);
+        
+        if(response.ok) {
+
+            response = await response.json();
+            console.log(response);
+            if(response.status == false)
+            {
+                setLoading(false);
+                throw new Error(`HTTP error! status: ${response.msg}`);
+            }
+
+            return response
+
         }
     }
+
+    if(error) {
+        return (
+            <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+                <div className="px-4 py-6 md:px-6 xl:px-7.5">
+                    <h4 className="text-xl font-semibold text-black dark:text-white">
+                    User Detail
+                    </h4>
+                </div>
+                <div className="px-4 py-6 md:px-6 xl:px-7.5 max-w-full overflow-x-auto">{error.message}</div>
+            </div>
+        )
+    }
+
     return (
         <>
             <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">

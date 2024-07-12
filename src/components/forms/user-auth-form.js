@@ -49,7 +49,7 @@ export default function UserAuthForm() {
 				<Input label="Password" type="password" name="password" handleChange={handleChange} errors={errors?.password} touched={touched?.password} values={values?.password}/>
 				<div className="flex items-center justify-between">
 					{
-						(loader == true) ? <Button className="ml-auto w-full" type="button" label="login....." /> : <Button className="ml-auto w-full" type="submit" label="Login With Email" />
+						(loader == true) ? <Button className="ml-auto w-full" type="button" label="login....." /> : <Button className="ml-auto w-full" type="submit" label="Login" />
 					}
 					<Link href='/user'>
 						<Button className="ml-auto w-full" type="button" label="Create User" />

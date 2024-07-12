@@ -5,27 +5,40 @@ function DeleteModal({onUpdate, userId}) {
     const router = useRouter();
 
     const handleDeleteUser = async () => {
+        
         let url = process.env.NEXT_PUBLIC_URL+"/api/user/delete";
         let response = await fetch(url, {
             method: "POST",
             body:JSON.stringify({id:userId})
         })
-        response = await response.json();
-        if(response.status == true)
-        {
-            toast.success(response.msg);
-            router.push('/dashboard');
-        }
-        if(response.status == false)
-        {
-            toast.error(response.msg);
+
+        if(!response.ok) {
+            toast.error(response.url+' '+response.statusText);
             onUpdate(false);
         }
 
-        if (response.hasOwnProperty('exception')) {
-            toast.error(response.message);
-            onUpdate(false);
+        if(response.ok) {
+
+            response = await response.json();
+            console.log(response);
+            if(response.status == true)
+            {
+                toast.success(response.msg);
+                onUpdate(false, 'deleted');
+                router.push('/dashboard/users');
+            }
+            if(response.status == false)
+            {
+                toast.error(response.msg);
+                onUpdate(false);
+            }
+    
+            if (response.hasOwnProperty('exception')) {
+                toast.error(response.message);
+                onUpdate(false);
+            }
         }
+
     }
     return (
         <>

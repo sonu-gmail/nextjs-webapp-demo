@@ -6,6 +6,7 @@ import Loader from "../../../../components/common/Loader";
 
 const Users = () => {
     const [users, setUsers] = useState([]);
+    const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [apiCall, setApiCall] = useState(false);
@@ -14,31 +15,73 @@ const Users = () => {
     
     useEffect(() => {
         setLoading(true);
-        usersListing();
-    },[]);
+        usersListing().then((data) => {
+            if(data.status == true)
+            {
+                setUsers(data.data);
+                setLoading(false);
+            }
+        }).catch((error) => {
+            setError(error)
+        });
+    },[apiCall]);
 
     const usersListing =  async () => {
+        
         let url = process.env.NEXT_PUBLIC_URL+"/api/user/listing";
         let response = await fetch(url, {
             method: "POST"
         })
-        response = await response.json();
-        console.log('--- ', response)
-        if(response.status == true)
-        {
-            setUsers(...users, response.data);
+        
+        if(!response.ok) {
             setLoading(false);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        if(response.ok) {
+            
+            response = await response.json();
+            
+            if(response.status == true && response.code == 200)
+            {
+                return response;
+            }
+
+            if(response.status == false)
+            {
+                throw new Error(`HTTP error! status: ${response.msg}`);
+            }
+
         }
     }
 
     const handleDelete = (id) => {
+        setApiCall(false);
         setShowDeleteModal(true)
         setUserId(id)
     }
 
-    const updateModalState = (value) => {
+    const updateModalState = (value, option='') => {
+        if(option == 'deleted')
+        {
+            setApiCall(true);
+        }
         setShowDeleteModal(value);
     };
+    
+    if(error)
+    {
+        return (
+            <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+                <div className="px-4 py-6 md:px-6 xl:px-7.5">
+                    <h4 className="text-xl font-semibold text-black dark:text-white">
+                    User Listing
+                    </h4>
+                </div>
+                <div className="max-w-full overflow-x-auto px-4 py-6 md:px-6 xl:px-7.5">{error.message}</div>
+            </div>
+        )
+    }
 
     return (
         <>
